@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FluentPEN</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col">
+
+  <!-- Top Navigation Bar -->
+  <header class="bg-white shadow-md p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-green-600">FluentPen</h1>
+    
+  </header>
+
+  <!-- Main Content -->
+  <div class="flex flex-1 overflow-hidden">
+
+    <!-- Text Editor -->
+    <div class="w-2/3 p-6 overflow-auto">
+      <textarea 
+        id="text-input"
+        class="w-full h-96 p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
+        placeholder="Start typing your text here..."
+      ></textarea>
+
+      <button 
+        onclick="enhanceText()"
+        class="mt-4 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition"
+      >
+        Enhance Text
+      </button>
+    </div>
+
+    <!-- Suggestions Sidebar -->
+    <aside class="w-1/3 bg-white p-6 border-l border-gray-300 overflow-auto">
+      <h2 class="text-xl font-semibold mb-4">Enhanced Text</h2>
+      <div id="output" class="space-y-4 text-gray-800"></div>
+    </aside>
+
+  </div>
+
+  <footer class="bg-white shadow-inner p-4 text-center text-sm text-gray-500">
+    © 2025 FluentPen. All rights reserved.
+  </footer>
+
+  <script>
+    async function enhanceText() {
+      const text = document.getElementById("text-input").value;
+      if (!text) {
+        alert("Please enter some text.");
+        return;
+      }
+
+      // Call the backend API
+      const response = await fetch("http://127.0.0.1:5000/api/enhance", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ text: text })
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        document.getElementById("output").innerText = result.enhanced_text;
+      } else {
+        document.getElementById("output").innerText = "Error: " + result.error;
+      }
+    }
+  </script>
+
+</body>
+</html>
